@@ -1,6 +1,11 @@
 #!/bin/bash
 set -euo pipefail
 
+if ! command -v nvm &> /dev/null; then
+    echo "Error: Node Version Manager (nvm-sh) is not installed."
+    exit 1
+fi
+
 if ! command -v npm &> /dev/null; then
     echo "Error: NPM is not installed."
     exit 1
@@ -10,6 +15,9 @@ if [ -f package.json ]; then
     echo "Error: package.json already exists. Exiting..."
     exit 1
 fi
+
+# Use the correct Node version
+nvm use
 
 # Initialize the npm project
 npm init -y && \
@@ -28,8 +36,10 @@ npx playwright install chromium
 # Move the init PRD to the root
 mv .prds/init.md PRD.md
 
+# Execute initial ralph loop
+sh .github/scripts/ralph.sh
+
 # Self destruct
 rm -- "${BASH_SOURCE[0]:-$0}"
 
-# Instruct to run the first ralph loop, which should be the starting point for the project
-echo "🚀 Done! Run 'npm run ralph' to start the initial loop."
+echo "🚀 Done!"
