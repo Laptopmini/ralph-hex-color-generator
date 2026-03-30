@@ -7,6 +7,25 @@
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
+    <div data-testid="color-value" id="color-display"></div>
     <button type="button" data-testid="generate-btn">Generate</button>
+    <script>
+      function generateHexColor() {
+        const randomColor = Math.floor(Math.random() * 16777215).toString(16);
+        return "#" + randomColor.padStart(6, "0").toUpperCase();
+      }
+
+      function updateColor() {
+        const hexColor = generateHexColor();
+        const colorDisplay = document.getElementById("color-display");
+        colorDisplay.textContent = hexColor;
+        colorDisplay.style.display = "block";
+        document.body.style.backgroundColor = hexColor;
+      }
+
+      document
+        .querySelector("[data-testid='generate-btn']")
+        .addEventListener("click", updateColor);
+    </script>
   </body>
 </html>
