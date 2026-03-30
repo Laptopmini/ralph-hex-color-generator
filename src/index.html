@@ -7,25 +7,39 @@
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
-    <div data-testid="color-value" id="color-display"></div>
+    <div id="color-container">
+      <div data-testid="color-value" id="color-display"></div>
+      <button type="button" data-testid="copy-btn">📋</button>
+    </div>
     <button type="button" data-testid="generate-btn">Generate</button>
     <script>
       function generateHexColor() {
         const randomColor = Math.floor(Math.random() * 16777215).toString(16);
-        return "#" + randomColor.padStart(6, "0").toUpperCase();
+        return `#${randomColor.padStart(6, "0").toUpperCase()}`;
       }
 
       function updateColor() {
         const hexColor = generateHexColor();
         const colorDisplay = document.getElementById("color-display");
+        const copyBtn = document.querySelector("[data-testid='copy-btn']");
         colorDisplay.textContent = hexColor;
         colorDisplay.style.display = "block";
+        copyBtn.style.display = "inline-block";
         document.body.style.backgroundColor = hexColor;
+      }
+
+      function copyToClipboard() {
+        const colorValue = document.getElementById("color-display").textContent;
+        navigator.clipboard.writeText(colorValue);
       }
 
       document
         .querySelector("[data-testid='generate-btn']")
         .addEventListener("click", updateColor);
+
+      document
+        .querySelector("[data-testid='copy-btn']")
+        .addEventListener("click", copyToClipboard);
     </script>
   </body>
 </html>

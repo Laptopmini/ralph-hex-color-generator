@@ -10,8 +10,27 @@ button {
   padding: 12px 24px;
 }
 
+#color-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
 #color-display {
   display: none;
   font-weight: bold;
-  margin-bottom: 20px;
+}
+
+[data-testid="copy-btn"] {
+  display: none;
+  background: none;
+  border: none;
+  font-size: 18px;
+  cursor: pointer;
+  padding: 0;
+}
+
+[data-testid="copy-btn"]:hover {
+  opacity: 0.7;
 }
