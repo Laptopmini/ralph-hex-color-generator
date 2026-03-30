@@ -25,7 +25,7 @@ be a reusable project skeleton that future PRDs can build on.
   `strict` enabled, and `outDir` set to `dist/`. Add `dist/` to `.gitignore`
   if not already present. `[test: npx tsc --noEmit]`
 
-- [ ] Configure Jest. Create a `jest.config.js` using the `ts-jest` preset
+- [ ] Configure Jest. Create a `jest.config.js` using the `@swc/jest` preset
   for a standard Node/TypeScript environment. Add a `"test:unit"` script to
   `package.json` that runs Jest. Create a sanity test at
   `tests/unit/setup.test.ts` with a single passing assertion

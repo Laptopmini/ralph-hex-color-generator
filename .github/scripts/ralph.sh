@@ -61,6 +61,8 @@ fi
 
 echo "🚀 Starting Ralph Loop for at most $MAX_LOOPS iterations, using $ENGINE..."
 
+ERROR_FEEDBACK=""
+
 while true; do
     echo "------------------------- Iteration $LOOP_COUNTER/$MAX_LOOPS -------------------------"
     echo "Parsing Active Task & Target Test..."
@@ -110,11 +112,9 @@ while true; do
     LEDGER_CONTEXT=$(tail -n 5 .agent-ledger.jsonl 2>/dev/null || echo "No history.")
     MEMORY_CONTEXT=$(cat MEMORY.md 2>/dev/null || echo "Scratchpad empty.")
     PRD_CONTENT=$(cat PRD.md)
-    ERROR_FEEDBACK=""
 
     PROMPT="
-$RALPH_PROMPT
-$ERROR_FEEDBACK
+$RALPH_PROMPT${ERROR_FEEDBACK:+$'\n'}$ERROR_FEEDBACK
 
 --- ARCHITECTURAL HISTORY (Last 5 Entries) ---
 
@@ -129,12 +129,14 @@ $MEMORY_CONTEXT
 $PRD_CONTENT
 "
 
+    ERROR_FEEDBACK=""
+
     echo "Handing control to $ENGINE..."
     OUTPUT=""
     ENGINE_EXIT=0
     if [[ "$ENGINE" == "claude" ]]; then
         set +e
-        OUTPUT=$(claude -p "$PROMPT" --allowedTools "Read,Edit,Write,Glob,Grep")
+        OUTPUT=$(claude -p "$PROMPT" --allowedTools "Read,Edit,Write,Glob,Grep,Bash")
         ENGINE_EXIT=$?
         set -e
 
@@ -162,6 +164,21 @@ $PRD_CONTENT
     PROPOSED_LEDGER=$(echo "$OUTPUT" | awk '/<ledger>/{flag=1; next} /<\/ledger>/{flag=0} flag')
 
     echo "Running Validation: $TARGETED_TEST"
+    ALLOWED_PREFIXES=("npm test" "npx jest" "npx playwright" "npx tsc" "npx biome")
+    ALLOWED=false
+    for prefix in "${ALLOWED_PREFIXES[@]}"; do
+        if [[ "$TARGETED_TEST" == "$prefix"* ]]; then
+            ALLOWED=true
+            break
+        fi
+    done
+
+    if [[ "$ALLOWED" != "true" ]]; then
+        echo "❌ Blocked test command: '$TARGETED_TEST'"
+        echo "   Only commands starting with: ${ALLOWED_PREFIXES[*]} are permitted."
+        echo "   Fix the [test: ...] annotation in PRD.md and re-run."
+        exit 1
+    fi
     set +e
     TEST_OUTPUT=$(eval "$TARGETED_TEST" 2>&1)
     TEST_EXIT_CODE=$?
@@ -178,13 +195,16 @@ $PRD_CONTENT
             echo "$PROPOSED_LEDGER" >> .agent-ledger.jsonl
         fi
 
-        ESCAPED_TASK=$(echo "$CURRENT_TASK" | sed 's/[]\/$*.^[]/\\&/g')
-        sed "s/$ESCAPED_TASK/- [x] ${CURRENT_TASK#*- [ ] }/" PRD.md > PRD.md.tmp && mv PRD.md.tmp PRD.md
+        awk -v task="$CURRENT_TASK" '{
+            if (!done && $0 == task) {
+                sub(/- \[ \]/, "- [x]")
+                done = 1
+            }
+            print
+        }' PRD.md > PRD.md.tmp && mv PRD.md.tmp PRD.md
         
         git add .
-        git commit -m "chore(ai): $CURRENT_TASK"
-        
-        ERROR_FEEDBACK="" 
+        git commit -m "chore(ai): $CURRENT_TASK" 
     else
         echo "❌ Validation failed. The agent must try again."
 

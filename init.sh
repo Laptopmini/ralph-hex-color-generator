@@ -6,22 +6,14 @@ if ! command -v nvm &> /dev/null; then
     exit 1
 fi
 
-if ! command -v npm &> /dev/null; then
-    echo "Error: NPM is not installed."
-    exit 1
-fi
-
 if [ -f package.json ]; then
     echo "Error: package.json already exists. Exiting..."
     exit 1
 fi
 
-# Use the correct Node version
-nvm use
-
 # Initialize the npm project
 npm init -y && \
-npm install -D @playwright/test jest @biomejs/biome && \
+npm install -D @playwright/test jest @biomejs/biome typescript ts-node @swc/jest @swc/core && \
 npm pkg set scripts.test="jest && playwright test" \
             scripts.backpressure="sh .github/scripts/backpressure.sh" \
             scripts.ralph="sh .github/scripts/ralph.sh" \
@@ -29,6 +21,20 @@ npm pkg set scripts.test="jest && playwright test" \
             scripts.format="biome format --write ." \
             engines.node=">=24.14.1" \
             engines.npm=">=11.11.0"
+
+# Create jest.config.ts
+cat > jest.config.ts << 'EOF'
+import type { Config } from '@jest/types';
+
+const config: Config.InitialOptions = {
+  // FIXME: If you are an agent, complete this configuration and remove this comment.
+  transform: {
+    "^.+\\.(js|jsx|ts|tsx)?$": "@swc/jest",
+  },
+};
+
+export default config;
+EOF
 
 # Install the playwright dependencies
 npx playwright install chromium
@@ -39,7 +45,7 @@ mv .prds/init.md PRD.md
 # Execute initial ralph loop
 sh .github/scripts/ralph.sh
 
+echo "🚀 Done!"
+
 # Self destruct
 rm -- "${BASH_SOURCE[0]:-$0}"
-
-echo "🚀 Done!"

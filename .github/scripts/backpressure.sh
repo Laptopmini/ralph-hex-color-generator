@@ -37,6 +37,8 @@ fi
 PROMPT="
 Read the following PRD. For each unchecked task, generate exactly the files described in that task — no more, no less.
 
+Read package.json before generating tests to understand which dependencies and test runners are available.
+
 - DO NOT write application source code. Only write config files and test files.
 - Treat each checkbox item as a single atomic unit of work.
   - When finished, each task should have only a single file to execute to validate the task.
