@@ -64,7 +64,7 @@ echo "🟢 Starting Ralph Loop for at most $MAX_LOOPS iterations, using $ENGINE.
 ERROR_FEEDBACK=""
 
 while true; do
-    echo "------------------------- Iteration $LOOP_COUNTER/$MAX_LOOPS -------------------------"
+    echo "------------------------- Iteration $((LOOP_COUNTER + 1))/$MAX_LOOPS -------------------------"
     echo "Parsing Active Task & Target Test..."
 
     CURRENT_TASK=$(grep -m 1 "^\s*- \[ \]" PRD.md || true)
@@ -137,8 +137,7 @@ $PRD_CONTENT
     ENGINE_EXIT=0
     if [[ "$ENGINE" == "claude" ]]; then
         set +e
-        # OUTPUT=$(claude -p "$PROMPT" --allowedTools "Read,Edit,Write,Glob,Grep,Bash")
-        OUTPUT=$(claude -p "$PROMPT" --allowedTools "Read,Edit,Write,Glob,Grep,Bash" --verbose | tee /dev/tty)
+        OUTPUT=$(claude -p "$PROMPT" --allowedTools "Read,Edit,Write,Glob,Grep,Bash")
         ENGINE_EXIT=$?
         set -e
 
@@ -188,15 +187,17 @@ $PRD_CONTENT
 
     if [ $TEST_EXIT_CODE -eq 0 ]; then
         echo "🟢 Task passed! Continuing..."
-        CURRENT_TASK_LABEL="Iteration $LOOP_COUNTER"
+        CURRENT_TASK_LABEL="Iteration $((LOOP_COUNTER + 1))"
         
         if [ -n "$PROPOSED_MEMORY" ]; then
             echo "$PROPOSED_MEMORY" > MEMORY.md
+            echo "Memory Updated:\n$PROPOSED_MEMORY"
         fi
         
         if [ -n "$PROPOSED_LEDGER" ]; then
             CURRENT_TASK_LABEL=$(printf '%s' "$PROPOSED_LEDGER" | tr -d '\n' | sed -nE 's/.*"task"[[:space:]]*:[[:space:]]*"([^"]+)".*/\1/p')
             echo "$PROPOSED_LEDGER" >> .agent-ledger.jsonl
+            echo "Ledger Entry Added:\n$PROPOSED_LEDGER"
         fi
 
         awk -v task="$CURRENT_TASK" '{
@@ -211,6 +212,7 @@ $PRD_CONTENT
         git commit -m "chore(ai): $CURRENT_TASK_LABEL" 
     else
         echo "🔴 Validation failed. The agent must try again."
+        echo "Test Output:\n$TEST_OUTPUT"
 
         ERROR_FEEDBACK="
         YOUR LAST ATTEMPT FAILED!

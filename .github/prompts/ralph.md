@@ -19,7 +19,15 @@ Because you are stateless, you must communicate with your future self and the or
 
 ## 2. The Changelog (`<ledger>...</ledger>`)
 **Purpose:** A machine-readable historical record of exactly what you mutated during this cycle. 
-**Format:** You MUST output a single, valid JSON object on ONE line. Do not use markdown code blocks inside the XML tags.
+**Format:** **Format:** You MUST output a single, valid JSON object on its own line, between the opening and closing tags (never inline with the tags). Do not use markdown code blocks inside the XML tags.
+   - Example: 
+      **Correct:**
+      <ledger>
+      {"task": "...", "files_mutated": [...], "summary": "..."}
+      </ledger>
+
+      **Wrong:**
+      <ledger>{"task": "...", "files_mutated": [...], "summary": "..."}</ledger>
 **Schema:**
 {"task": "Short task description", "files_mutated": ["path/to/file1.ts", "path/to/file2.ts"], "summary": "Brief explanation of the technical approach taken"}
 
