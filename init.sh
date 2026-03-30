@@ -1,8 +1,8 @@
 #!/bin/bash
 set -euo pipefail
 
-if ! command -v nvm &> /dev/null; then
-    echo "Error: Node Version Manager (nvm-sh) is not installed."
+if ! command -v npm &> /dev/null; then
+    echo "Error: NPM is not installed."
     exit 1
 fi
 
