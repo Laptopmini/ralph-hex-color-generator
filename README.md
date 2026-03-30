@@ -1,6 +1,6 @@
-# ralph-html
+# ralph-hex-color-generator
 
-A fork of [ralph-node](https://github.com/Laptopmini/ralph-node) with a simple boilerplate to serve a static HTML based application.
+A fork of [ralph-node](https://github.com/Laptopmini/ralph-node) implementing a static HTML website with a button that generates a random hex color value, displays this code to the user, allows them to copy it, and makes the background color of the page use the generated value.
 
 Fork this repo and drop in a new `PRD.md` to start building something with the loop already bootstrapped.
 
@@ -11,7 +11,7 @@ For full documentation on how the Ralph Loop works and how to use these repos, s
 All `ralph-node` repos begin from the same genesis, and branch off a specific upstream in its tree:
 
 - **Genesis:** https://github.com/Laptopmini/ralph-node
-- **Upstream:** https://github.com/Laptopmini/ralph-node-base
+- **Upstream:** https://github.com/Laptopmini/ralph-html
 
 ## Changelog
 
@@ -21,6 +21,9 @@ All `ralph-node` repos begin from the same genesis, and branch off a specific up
 - **Root test script** — `npm test` wired to run unit then E2E tests sequentially
 - **Static HTML website** — Configured to serve a static HTML based application
 - **Playwright webServer** — Updated Playwright configuration with webServer block for proper test execution
+- **Homepage with Generate button** — Replaced default content with large button element for color generation
+- **Random hex color generation** — Implemented `generateHexColor()` function producing #RRGGBB format, displays color and sets background
+- **Copy to clipboard** — Added copy button with emoji positioned next to color value using `navigator.clipboard.writeText()`
 
 ## License
 
