@@ -17,7 +17,7 @@ Establish and verify the baseline configuration for TypeScript, Jest (unit testi
 
 ## Tasks
 
-- [ ] Configure TypeScript. Create a `tsconfig.json` with `target` set to `ES2022`, `module` set to `NodeNext`, `moduleResolution` set to `NodeNext`, `strict` enabled, and `outDir` set to `dist/`. Also have the config `include` any `**/*` files and create a file `src/index.ts` with only `export {};` to indicate the project is empty. `[test: npx tsc --noEmit]`
+- [ ] Configure TypeScript. Create a `tsconfig.json` with `target` set to `ES2022`, `module` set to `NodeNext`, `moduleResolution` set to `NodeNext`, `strict` enabled, and `outDir` set to `dist/`. Also have the config `include` any `**/*` files and create a file `src/index.ts` with only `export {};` to indicate the project is empty. Have the `types` array includes `jest` and `node`. Make sure to `exclude` the folders `.next`, `dist` and `node_modules`. `[test: npx tsc --noEmit]`
 
 - [ ] Configure Jest. Create a `jest.config.js` using the `@swc/jest` preset for a standard Node/TypeScript environment. Add a `"test:unit"` script to `package.json` that runs Jest. Create a sanity test at `tests/unit/setup.spec.ts` with a single passing assertion (`expect(1 + 1).toBe(2)`). Add both `*.spec.ts` and `*.test.ts` as a pattern to discover test files. `[test: npx jest]`
 
