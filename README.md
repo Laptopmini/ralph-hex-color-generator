@@ -17,7 +17,7 @@ This repo is an exercise in applied AI engineering — specifically in designing
 
 **Pick a starting point:**
 
-- **From scratch** — fork this repo and run `nvm use && sh init.sh` to bootstrap. This lets you optimize the initial PRD and infrastructure.
+- **From scratch** — fork this repo and run `nvm use && bash init.sh` to bootstrap. This lets you optimize the initial PRD and infrastructure.
 - **From a fork** — browse [existing forks](https://github.com/topics/ralph-node) and start from one that already has an initialized project. This saves tokens by iterating from a checkpoint instead of regenerating from zero.
 
 Any repo — this one or a fork — can serve as the starting point for the next iteration.

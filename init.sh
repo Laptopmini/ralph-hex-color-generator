@@ -14,8 +14,8 @@ fi
 # Initialize the npm project
 npm init -y && \
 npm pkg set scripts.test="jest && playwright test" \
-            scripts.backpressure="sh .github/scripts/backpressure.sh" \
-            scripts.ralph="sh .github/scripts/ralph.sh" \
+            scripts.backpressure="bash .github/scripts/backpressure.sh" \
+            scripts.ralph="bash .github/scripts/ralph.sh" \
             scripts.lint="biome check --write ." \
             scripts.check-types="tsc --noEmit" \
             engines.node=">=24.14.1" \
@@ -29,7 +29,7 @@ npx playwright install chromium
 mv .prds/init.md PRD.md
 
 # Execute initial ralph loop
-sh .github/scripts/ralph.sh
+bash .github/scripts/ralph.sh
 
 echo "🚀 Done!"
 
